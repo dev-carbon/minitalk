@@ -12,12 +12,7 @@
 
 #include "minitalk.h"
 
-void	display_pid(int	pid)
-{
-	ft_putstr_fd("PID : ", STDOUT_FILENO);
-	ft_putnbr_fd(pid, STDOUT_FILENO);
-	ft_putchar_fd('\n', STDOUT_FILENO);
-}
+int	g_acked;
 
 void	quit(int err)
 {
@@ -39,6 +34,7 @@ void	send_byte(pid_t pid, char byte)
 	shift = -1;
 	while (++shift < 8)
 	{
+		g_acked = 0;
 		bit = (byte >> shift) & 0x01;
 		if (bit == 0)
 			ret = kill(pid, SIGUSR1);
@@ -46,7 +42,8 @@ void	send_byte(pid_t pid, char byte)
 			ret = kill(pid, SIGUSR2);
 		if (ret == -1)
 			quit(ERR_UNKNOW);
-		usleep(500);
+		while (g_acked == 0)
+			pause();
 	}
 }
 
@@ -56,22 +53,31 @@ void	send_message(pid_t pid, char const *msg)
 
 	i = -1;
 	while (msg[++i] != '\0')
-	{
 		send_byte(pid, msg[i]);
-		usleep(100);
-	}
 	send_byte(pid, msg[i]);
+}
+
+void	signal_handler(int sig, siginfo_t *siginfo, void *context)
+{
+	(void)sig;
+	(void)siginfo;
+	(void)context;
+	g_acked = 1;
 }
 
 int	main(int argc, char *argv[])
 {
 	pid_t				server_pid;
+	struct sigaction	sa;
 
 	if (argc != 3)
 		quit(ERR_NUM_PARAMS);
 	server_pid = ft_atoi(argv[1]);
 	if (server_pid < 0)
 		quit(ERR_BAD_PID);
+	sa.sa_sigaction = signal_handler;
+	sa.sa_flags = SA_SIGINFO;
+	sigaction(SIGUSR1, &sa, NULL);
 	send_message(server_pid, argv[2]);
 	return (0);
 }

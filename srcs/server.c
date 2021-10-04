@@ -28,13 +28,10 @@ static void signal_handler(int sig, siginfo_t *siginfo, void *context)
 	char		tmp[2];
 
 	(void)context;
-	(void)siginfo;
 	bit = 0;
 	if (sig == SIGUSR2)
 		bit = 1;
-	byte += (bit << size);
-	size++;
-	tmp[0] = '\0';
+	byte += (bit << size++);
 	tmp[1] = '\0';
 	if (size == 8)
 	{
@@ -46,20 +43,20 @@ static void signal_handler(int sig, siginfo_t *siginfo, void *context)
 		if (byte == '\0')
 		{
 			ft_putstr_fd(msg, STDOUT_FILENO);
-			ft_putchar('\n');
 			free(msg);
 			msg = NULL;
 		}
 		byte = 0;
 		size = 0;
-		
 	}
+	kill(siginfo->si_pid, SIGUSR1);
 }
 
 int	main(void)
 {
 	struct sigaction	sa;
 
+	ft_memset(&sa, 0, sizeof(sa));
 	sa.sa_sigaction = signal_handler;
 	sa.sa_flags = SA_SIGINFO;
 	display_pid(getpid());

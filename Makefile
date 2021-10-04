@@ -23,7 +23,7 @@ CC = clang
 
 CFLAGS = -Wall -Wextra -Werror
 
-SANITIZE = -fsanitize=address
+# SANITIZE = -fsanitize=address
 
 INC = 	-Iincludes/ \
 		-Ilibft/ \
@@ -49,20 +49,20 @@ all: $(CLIENT) $(SERVER)
 	# @mkdir objs
 	@echo "$(gray)Compiling $<... \c"
 	@echo "$(red)\c"
-	$(CC) $(FLAGS) $(INC) -c $< -o $@
+	$(CC) $(CFLAGS) -g $(SANITIZE) $(INC) -c $< -o $@
 	@echo "$(cyan)OK!"
 
 $(CLIENT): $(OBJS_CLIENT)
 	@echo "$(yellow)Client: source files compiled."
 	@echo "$(red)\c"
-	$(CC) $(FLAGS) $(SANITIZE)  -o $(CLIENT) $(OBJS_CLIENT) $(LIBS)
+	$(CC) $(CFLAGS) -g $(SANITIZE)  -o $(CLIENT) $(OBJS_CLIENT) $(LIBS)
 	@echo "$(blue)Client ready!"
 	@echo "$(white)\c"
 
 $(SERVER): $(OBJS_SERVER)
 	@echo "$(yellow)Server: source files compiled."
 	@echo "$(red)\c"
-	$(CC) $(FLAGS) $(SANITIZE) -o $(SERVER) $(OBJS_SERVER) $(LIBS)
+	$(CC) $(CFLAGS) -g $(SANITIZE) -o $(SERVER) $(OBJS_SERVER) $(LIBS)
 	@echo "$(blue)Server ready!"
 	@echo "$(white)\c"
 
