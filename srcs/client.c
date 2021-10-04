@@ -12,6 +12,13 @@
 
 #include "minitalk.h"
 
+void	display_pid(int	pid)
+{
+	ft_putstr_fd("PID : ", STDOUT_FILENO);
+	ft_putnbr_fd(pid, STDOUT_FILENO);
+	ft_putchar_fd('\n', STDOUT_FILENO);
+}
+
 void	quit(int err)
 {
 	if (err == ERR_NUM_PARAMS)
@@ -23,51 +30,42 @@ void	quit(int err)
 	exit(EXIT_FAILURE);
 }
 
-void	send_message(pid_t pid, char const *msg)
+void	send_byte(pid_t pid, char byte)
 {
-	int		i;
 	int		bit;
 	int		shift;
 	int		ret;
 
-	i = -1;
-	while (msg[++i] != '\0')
+	shift = -1;
+	while (++shift < 8)
 	{
-		shift = -1;
-		while (++shift < 8)
-		{
-			bit = (msg[i] >> shift) & 0x01;
-			if (bit == 0)
-				ret = kill(pid, SIGUSR1);
-			else
-				ret = kill(pid, SIGUSR2);
-			if (ret == -1)
-				quit(ERR_UNKNOW);
-			usleep(MS);
-		}
-	}
-	if (msg[i] == '\0')
-	{
-		shift = -1;
-		while (++shift < 8)
-		{
-			if (kill(pid, SIGUSR1) == -1)
-				quit(ERR_UNKNOW);
-			usleep(MS);
-		}
+		bit = (byte >> shift) & 0x01;
+		if (bit == 0)
+			ret = kill(pid, SIGUSR1);
+		else
+			ret = kill(pid, SIGUSR2);
+		if (ret == -1)
+			quit(ERR_UNKNOW);
+		usleep(500);
 	}
 }
 
-void	display_pid(int	pid)
+void	send_message(pid_t pid, char const *msg)
 {
-	ft_putstr_fd("PID : ", STDOUT_FILENO);
-	ft_putnbr_fd(pid, STDOUT_FILENO);
-	ft_putchar_fd('\n', STDOUT_FILENO);
+	int		i;
+
+	i = -1;
+	while (msg[++i] != '\0')
+	{
+		send_byte(pid, msg[i]);
+		usleep(100);
+	}
+	send_byte(pid, msg[i]);
 }
 
 int	main(int argc, char *argv[])
 {
-	pid_t	server_pid;
+	pid_t				server_pid;
 
 	if (argc != 3)
 		quit(ERR_NUM_PARAMS);

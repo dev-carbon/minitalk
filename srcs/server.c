@@ -12,46 +12,48 @@
 
 #include "minitalk.h"
 
-static void signal_handler(int sig, siginfo_t *siginfo, void *context)
-{
-	int			bit;
-	static int	size = 0;
-	static char	byte = 0;
-	// static char	*msg = NULL;
-	// char		tmp[2];
-
-	(void)context;
-	(void)siginfo;
-	bit = sig & 0x01;
-	byte += (bit << size);
-	size++;
-	if (size == 0)
-	{
-		write(STDOUT_FILENO, &byte, 1);
-		// tmp[0] = byte;
-		// tmp[1] = '\0';
-		// if (msg == NULL)
-		// 	msg = ft_strdup(tmp);
-		// else
-		// 	msg = ft_strjoin(msg, tmp);
-		// if (byte == '\0')
-		// {
-		// 	ft_putstr_fd(msg, STDOUT_FILENO);
-		// 	ft_putchar('\n');
-		// 	free(msg);
-		// 	msg = NULL;
-		// }
-		byte = 0;
-		size = 0;
-	}
-	usleep(42);
-}
-
 void	display_pid(int	pid)
 {
 	ft_putstr_fd("PID : ", STDOUT_FILENO);
 	ft_putnbr_fd(pid, STDOUT_FILENO);
 	ft_putchar_fd('\n', STDOUT_FILENO);
+}
+
+static void signal_handler(int sig, siginfo_t *siginfo, void *context)
+{
+	int			bit;
+	static int	size = 0;
+	static char	byte = 0;
+	static char	*msg = NULL;
+	char		tmp[2];
+
+	(void)context;
+	(void)siginfo;
+	bit = 0;
+	if (sig == SIGUSR2)
+		bit = 1;
+	byte += (bit << size);
+	size++;
+	tmp[0] = '\0';
+	tmp[1] = '\0';
+	if (size == 8)
+	{
+		tmp[0] = byte;
+		if (msg == NULL)
+			msg = ft_strdup(tmp);
+		else
+			msg = ft_strjoin(msg, tmp);
+		if (byte == '\0')
+		{
+			ft_putstr_fd(msg, STDOUT_FILENO);
+			ft_putchar('\n');
+			free(msg);
+			msg = NULL;
+		}
+		byte = 0;
+		size = 0;
+		
+	}
 }
 
 int	main(void)

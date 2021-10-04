@@ -19,8 +19,6 @@
 # include <unistd.h>
 # include "libft.h"
 
-# define MS 100
-
 # define ERR_NUM_PARAMS 0x01
 # define ERR_BAD_PID 0x02
 # define ERR_UNKNOW 0x03
