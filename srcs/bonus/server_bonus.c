@@ -1,16 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: humanfou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/01 01:45:22 by humanfou          #+#    #+#             */
-/*   Updated: 2021/10/04 23:43:48 by humanfou         ###   ########.fr       */
+/*   Updated: 2021/10/04 23:43:26 by humanfou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+
+static void	ping_client(int bit, int pid)
+{
+	if (bit == -1)
+		kill(pid, SIGUSR2);
+	else
+		kill(pid, SIGUSR1);
+}
 
 static char	*build_message(char	*msg, char byte)
 {
@@ -50,11 +58,12 @@ static void	signal_handler(int sig, siginfo_t *siginfo, void *context)
 			ft_putstr_fd(msg, STDOUT_FILENO);
 			free(msg);
 			msg = NULL;
+			bit = -1;
 		}
 		byte = 0;
 		size = 0;
 	}
-	kill(siginfo->si_pid, SIGUSR1);
+	ping_client(bit, siginfo->si_pid);
 }
 
 int	main(void)

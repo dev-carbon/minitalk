@@ -6,7 +6,7 @@
 #    By: ugdaniel <ugdaniel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/21 14:00:28 by ugdaniel          #+#    #+#              #
-#    Updated: 2021/06/22 16:22:33 by ugdaniel         ###   ########.fr        #
+#    Updated: 2021/10/04 22:53:42 by humanfou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,8 +23,6 @@ CC = clang
 
 CFLAGS = -Wall -Wextra -Werror
 
-# SANITIZE = -fsanitize=address
-
 INC = 	-Iincludes/ \
 		-Ilibft/ \
 
@@ -38,10 +36,20 @@ CLIENT = client
 SRCS_CLIENT = ./srcs/client.c
 OBJS_CLIENT = $(SRCS_CLIENT:.c=.o)
 
-OBJS_DIR = objs
+SERVER_BONUS = server_bonus
+SRCS_SERVER_BONUS = ./srcs/bonus/server_bonus.c
+OBJS_SERVER_BONUS = $(SRCS_SERVER_BONUS:.c=.o)
+
+CLIENT_BONUS = client_bonus
+SRCS_CLIENT_BONUS = ./srcs/bonus/client_bonus.c
+OBJS_CLIENT_BONUS = $(SRCS_CLIENT_BONUS:.c=.o)
 
 all: $(CLIENT) $(SERVER)
 	@echo "$(green)Minitalk ready!"
+	@echo "$(white)\c"
+
+bonus: $(CLIENT_BONUS) $(SERVER_BONUS)
+	@echo "$(green)Minitalk bonus ready!"
 	@echo "$(white)\c"
 
 .c.o:
@@ -49,33 +57,50 @@ all: $(CLIENT) $(SERVER)
 	# @mkdir objs
 	@echo "$(gray)Compiling $<... \c"
 	@echo "$(red)\c"
-	$(CC) $(CFLAGS) -g $(SANITIZE) $(INC) -c $< -o $@
+	$(CC) $(CFLAGS) -g $(INC) -c $< -o $@
 	@echo "$(cyan)OK!"
 
 $(CLIENT): $(OBJS_CLIENT)
 	@echo "$(yellow)Client: source files compiled."
 	@echo "$(red)\c"
-	$(CC) $(CFLAGS) -g $(SANITIZE)  -o $(CLIENT) $(OBJS_CLIENT) $(LIBS)
+	$(CC) $(CFLAGS) -g -o $(CLIENT) $(OBJS_CLIENT) $(LIBS)
 	@echo "$(blue)Client ready!"
 	@echo "$(white)\c"
 
 $(SERVER): $(OBJS_SERVER)
 	@echo "$(yellow)Server: source files compiled."
 	@echo "$(red)\c"
-	$(CC) $(CFLAGS) -g $(SANITIZE) -o $(SERVER) $(OBJS_SERVER) $(LIBS)
+	$(CC) $(CFLAGS) -g -o $(SERVER) $(OBJS_SERVER) $(LIBS)
 	@echo "$(blue)Server ready!"
+	@echo "$(white)\c"
+
+$(CLIENT_BONUS): $(OBJS_CLIENT_BONUS)
+	@echo "$(yellow)Client bonus: source files compiled."
+	@echo "$(red)\c"
+	$(CC) $(CFLAGS) -g -o $(CLIENT_BONUS) $(OBJS_CLIENT_BONUS) $(LIBS)
+	@echo "$(blue)Client bonus ready!"
+	@echo "$(white)\c"
+
+$(SERVER_BONUS): $(OBJS_SERVER_BONUS)
+	@echo "$(yellow)Server bonus: source files compiled."
+	@echo "$(red)\c"
+	$(CC) $(CFLAGS) -g -o $(SERVER_BONUS) $(OBJS_SERVER_BONUS) $(LIBS)
+	@echo "$(blue)Server bonus ready!"
 	@echo "$(white)\c"
 
 clean:
 	@echo "$(gray)Cleaning object files."
 	@echo "$(red)\c"
-	@rm -f $(OBJS_CLIENT) $(OBJS_SERVER)
+	@rm -f $(OBJS_CLIENT) $(OBJS_SERVER) $(OBJS_CLIENT_BONUS) $(OBJS_SERVER_BONUS)
 
 fclean: clean
-	@rm -f $(CLIENT) $(SERVER)
-	@echo "$(magenta)Server executable removed."
+	@rm -f $(CLIENT) $(SERVER) $(CLIENT_BONUS) $(SERVER_BONUS)
+	@echo "$(magenta)Executables removed."
 	@echo "$(red)\c"
 
 re: fclean all
+
+norme:
+	norminette ./libft ./includes ./srcs
 
 .PHONY: all clean fclean re

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: humanfou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/01 22:30:02 by humanfou          #+#    #+#             */
-/*   Updated: 2021/10/04 23:43:57 by humanfou         ###   ########.fr       */
+/*   Updated: 2021/10/04 23:43:36 by humanfou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,22 @@ static void	send_message(pid_t pid, char const *msg)
 
 static void	signal_handler(int sig, siginfo_t *siginfo, void *context)
 {
+	static int	count = 0;
+
 	(void)sig;
 	(void)siginfo;
 	(void)context;
+	if (sig == SIGUSR1)
+	{
+		count += 1;
+		write(STDOUT_FILENO, "1 byte received\n", 16);
+	}
+	else if (sig == SIGUSR2)
+	{
+		write(STDOUT_FILENO, "Server received: ", 17);
+		ft_putnbr_fd(++count / 8, STDOUT_FILENO);
+		write(STDOUT_FILENO, " byte(s)\n", 9);
+	}
 	g_acked = 1;
 }
 
@@ -80,6 +93,7 @@ int	main(int argc, char *argv[])
 	sa.sa_sigaction = signal_handler;
 	sa.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &sa, NULL);
+	sigaction(SIGUSR2, &sa, NULL);
 	send_message(server_pid, argv[2]);
 	return (0);
 }
