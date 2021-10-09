@@ -12,16 +12,13 @@
 
 red			= \033[91m
 green 		= \033[92m
-white 		= \033[39m
 blue		= \033[94m
-cyan 		= \033[96m
-gray		= \033[37m
-yellow		= \033[33m
-magenta		= \033[35m
+white 		= \033[39m
+RESET 		= \033[0m
 
 CC = clang
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 
 INC = 	-Iincludes/ \
 		-Ilibft/ \
@@ -53,38 +50,36 @@ bonus: $(CLIENT_BONUS) $(SERVER_BONUS)
 	@echo "$(white)\c"
 
 .c.o:
-	# @echo "Creating object files directory"
-	# @mkdir objs
 	@echo "$(gray)Compiling $<... \c"
 	@echo "$(red)\c"
-	$(CC) $(CFLAGS) -g $(INC) -c $< -o $@
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 	@echo "$(cyan)OK!"
 
 $(CLIENT): $(OBJS_CLIENT)
 	@echo "$(yellow)Client: source files compiled."
 	@echo "$(red)\c"
-	$(CC) $(CFLAGS) -g -o $(CLIENT) $(OBJS_CLIENT) $(LIBS)
+	$(CC) $(CFLAGS) -o $(CLIENT) $(OBJS_CLIENT) $(LIBS)
 	@echo "$(blue)Client ready!"
 	@echo "$(white)\c"
 
 $(SERVER): $(OBJS_SERVER)
 	@echo "$(yellow)Server: source files compiled."
 	@echo "$(red)\c"
-	$(CC) $(CFLAGS) -g -o $(SERVER) $(OBJS_SERVER) $(LIBS)
+	$(CC) $(CFLAGS) -o $(SERVER) $(OBJS_SERVER) $(LIBS)
 	@echo "$(blue)Server ready!"
 	@echo "$(white)\c"
 
 $(CLIENT_BONUS): $(OBJS_CLIENT_BONUS)
 	@echo "$(yellow)Client bonus: source files compiled."
 	@echo "$(red)\c"
-	$(CC) $(CFLAGS) -g -o $(CLIENT_BONUS) $(OBJS_CLIENT_BONUS) $(LIBS)
+	$(CC) $(CFLAGS) -o $(CLIENT_BONUS) $(OBJS_CLIENT_BONUS) $(LIBS)
 	@echo "$(blue)Client bonus ready!"
 	@echo "$(white)\c"
 
 $(SERVER_BONUS): $(OBJS_SERVER_BONUS)
 	@echo "$(yellow)Server bonus: source files compiled."
 	@echo "$(red)\c"
-	$(CC) $(CFLAGS) -g -o $(SERVER_BONUS) $(OBJS_SERVER_BONUS) $(LIBS)
+	$(CC) $(CFLAGS) -o $(SERVER_BONUS) $(OBJS_SERVER_BONUS) $(LIBS)
 	@echo "$(blue)Server bonus ready!"
 	@echo "$(white)\c"
 

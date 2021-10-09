@@ -47,7 +47,7 @@ static void	signal_handler(int sig, siginfo_t *siginfo, void *context)
 		msg = build_message(msg, byte);
 		if (byte == '\0')
 		{
-			ft_putstr_fd(msg, STDOUT_FILENO);
+			write(STDOUT_FILENO, msg, ft_strlen(msg) + 1);
 			free(msg);
 			msg = NULL;
 		}
