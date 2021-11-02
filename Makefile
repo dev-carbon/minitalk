@@ -10,18 +10,18 @@
 #                                                                              #
 # **************************************************************************** #
 
-red			= \033[91m
-green 		= \033[92m
-blue		= \033[94m
-white 		= \033[39m
-RESET 		= \033[0m
+RED	= \033[31m
+GREEN = \033[32m
+BLUE = \033[34m
+WHITE = \033[39m
+RESET = \033[0m
 
 CC = clang
 
 CFLAGS = -Wall -Wextra -Werror -g
 
-INC = 	-Iincludes/ \
-		-Ilibft/ \
+INC = -Iincludes/ \
+	-Ilibft/ \
 
 LIBS = -Llibft -lft
 
@@ -42,56 +42,35 @@ SRCS_CLIENT_BONUS = ./srcs/bonus/client_bonus.c
 OBJS_CLIENT_BONUS = $(SRCS_CLIENT_BONUS:.c=.o)
 
 all: $(CLIENT) $(SERVER)
-	@echo "$(green)Minitalk ready!"
-	@echo "$(white)\c"
+	@echo "$(GREEN)Minitalk ready!"
 
 bonus: $(CLIENT_BONUS) $(SERVER_BONUS)
-	@echo "$(green)Minitalk bonus ready!"
-	@echo "$(white)\c"
+	@echo "$(GREEN)Minitalk bonus ready!"
 
 .c.o:
-	@echo "$(gray)Compiling $<... \c"
-	@echo "$(red)\c"
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
-	@echo "$(cyan)OK!"
 
 $(CLIENT): $(OBJS_CLIENT)
-	@echo "$(yellow)Client: source files compiled."
-	@echo "$(red)\c"
 	$(CC) $(CFLAGS) -o $(CLIENT) $(OBJS_CLIENT) $(LIBS)
-	@echo "$(blue)Client ready!"
-	@echo "$(white)\c"
+	@echo "$(BLUE)Client ready.$(RESET)"
 
 $(SERVER): $(OBJS_SERVER)
-	@echo "$(yellow)Server: source files compiled."
-	@echo "$(red)\c"
 	$(CC) $(CFLAGS) -o $(SERVER) $(OBJS_SERVER) $(LIBS)
-	@echo "$(blue)Server ready!"
-	@echo "$(white)\c"
+	@echo "$(BLUE)Server ready.$(RESET)"
 
 $(CLIENT_BONUS): $(OBJS_CLIENT_BONUS)
-	@echo "$(yellow)Client bonus: source files compiled."
-	@echo "$(red)\c"
 	$(CC) $(CFLAGS) -o $(CLIENT_BONUS) $(OBJS_CLIENT_BONUS) $(LIBS)
-	@echo "$(blue)Client bonus ready!"
-	@echo "$(white)\c"
+	@echo "$(BLUE)Client bonus ready.$(RESET)"
 
 $(SERVER_BONUS): $(OBJS_SERVER_BONUS)
-	@echo "$(yellow)Server bonus: source files compiled."
-	@echo "$(red)\c"
 	$(CC) $(CFLAGS) -o $(SERVER_BONUS) $(OBJS_SERVER_BONUS) $(LIBS)
-	@echo "$(blue)Server bonus ready!"
-	@echo "$(white)\c"
+	@echo "$(BLUE)Server bonus ready.$(RESET)"
 
 clean:
-	@echo "$(gray)Cleaning object files."
-	@echo "$(red)\c"
 	@rm -f $(OBJS_CLIENT) $(OBJS_SERVER) $(OBJS_CLIENT_BONUS) $(OBJS_SERVER_BONUS)
 
 fclean: clean
 	@rm -f $(CLIENT) $(SERVER) $(CLIENT_BONUS) $(SERVER_BONUS)
-	@echo "$(magenta)Executables removed."
-	@echo "$(red)\c"
 
 re: fclean all
 
