@@ -41,8 +41,6 @@ CLIENT_BONUS = client_bonus
 SRCS_CLIENT_BONUS = ./srcs/bonus/client_bonus.c
 OBJS_CLIENT_BONUS = $(SRCS_CLIENT_BONUS:.c=.o)
 
-LIBFT = libft.a
-
 all: $(CLIENT) $(SERVER)
 	@echo "$(GREEN)Minitalk ready!"
 
@@ -54,25 +52,25 @@ bonus: $(CLIENT_BONUS) $(SERVER_BONUS)
 
 
 $(CLIENT): $(OBJS_CLIENT)
-	@echo "Minitalk creating $@ ..."
+	@echo "Minitalk creating libft ..."
 	@$(MAKE) -sC libft
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	@echo "$(BLUE)Client ready.$(RESET)"
 
 $(SERVER): $(OBJS_SERVER)
-	@echo "Minitalk creating $@ ..."
+	@echo "Minitalk creating libft ..."
 	@$(MAKE) -sC libft
 	$(CC) $(CFLAGS) -o $@ $(OBJS_CLIENT) $(LIBS)
 	@echo "$(BLUE)Server ready.$(RESET)"
 
 $(CLIENT_BONUS): $(OBJS_CLIENT_BONUS)
-	@echo "Minitalk creating $@ ..."
+	@echo "Minitalk creating libft ..."
 	@$(MAKE) -sC libft
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	@echo "$(BLUE)Client bonus ready.$(RESET)"
 
 $(SERVER_BONUS): $(OBJS_SERVER_BONUS)
-	@echo "Minitalk creating $@ ..."
+	@echo "Minitalk creating libft ..."
 	@$(MAKE) -sC libft
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	@echo "$(BLUE)Server bonus ready.$(RESET)"
