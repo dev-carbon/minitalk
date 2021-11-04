@@ -6,11 +6,11 @@
 #    By: ugdaniel <ugdaniel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/21 14:00:28 by ugdaniel          #+#    #+#              #
-#    Updated: 2021/10/04 22:53:42 by humanfou         ###   ########.fr        #
+#    Updated: 2021/11/04 13:46:02 by humanfou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-RED	= \033[31m
+RED = \033[31m
 GREEN = \033[32m
 BLUE = \033[34m
 WHITE = \033[39m
@@ -41,6 +41,8 @@ CLIENT_BONUS = client_bonus
 SRCS_CLIENT_BONUS = ./srcs/bonus/client_bonus.c
 OBJS_CLIENT_BONUS = $(SRCS_CLIENT_BONUS:.c=.o)
 
+LIBFT = libft.a
+
 all: $(CLIENT) $(SERVER)
 	@echo "$(GREEN)Minitalk ready!"
 
@@ -50,31 +52,43 @@ bonus: $(CLIENT_BONUS) $(SERVER_BONUS)
 .c.o:
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
+
 $(CLIENT): $(OBJS_CLIENT)
-	$(CC) $(CFLAGS) -o $(CLIENT) $(OBJS_CLIENT) $(LIBS)
+	@echo "Minitalk creating $@ ..."
+	@$(MAKE) -sC libft
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	@echo "$(BLUE)Client ready.$(RESET)"
 
 $(SERVER): $(OBJS_SERVER)
-	$(CC) $(CFLAGS) -o $(SERVER) $(OBJS_SERVER) $(LIBS)
+	@echo "Minitalk creating $@ ..."
+	@$(MAKE) -sC libft
+	$(CC) $(CFLAGS) -o $@ $(OBJS_CLIENT) $(LIBS)
 	@echo "$(BLUE)Server ready.$(RESET)"
 
 $(CLIENT_BONUS): $(OBJS_CLIENT_BONUS)
-	$(CC) $(CFLAGS) -o $(CLIENT_BONUS) $(OBJS_CLIENT_BONUS) $(LIBS)
+	@echo "Minitalk creating $@ ..."
+	@$(MAKE) -sC libft
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	@echo "$(BLUE)Client bonus ready.$(RESET)"
 
 $(SERVER_BONUS): $(OBJS_SERVER_BONUS)
-	$(CC) $(CFLAGS) -o $(SERVER_BONUS) $(OBJS_SERVER_BONUS) $(LIBS)
+	@echo "Minitalk creating $@ ..."
+	@$(MAKE) -sC libft
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	@echo "$(BLUE)Server bonus ready.$(RESET)"
 
 clean:
+	@$(MAKE) -sC libft clean
 	@rm -f $(OBJS_CLIENT) $(OBJS_SERVER) $(OBJS_CLIENT_BONUS) $(OBJS_SERVER_BONUS)
 
-fclean: clean
+fclean: 
+	@$(MAKE) -sC libft fclean
+	@rm -f $(OBJS_CLIENT) $(OBJS_SERVER) $(OBJS_CLIENT_BONUS) $(OBJS_SERVER_BONUS)
 	@rm -f $(CLIENT) $(SERVER) $(CLIENT_BONUS) $(SERVER_BONUS)
 
 re: fclean all
 
 norme:
-	norminette ./libft ./includes ./srcs
+	@norminette ./libft ./includes ./srcs
 
 .PHONY: all clean fclean re
